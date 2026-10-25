@@ -14,6 +14,7 @@ Página de Pesquisa (Search):
 <img width="1820" height="902" alt="Captura de ecrã 2026-GR24hSearch" src="https://github.com/user-attachments/assets/777b2395-6814-4ea0-a429-36aeef924aba" />
 
 
+
 2. Principais Funcionalidades (Features)
 
 Gestão Completa de Receitas: Criar, editar, listar, detalhar e apagar receitas, com suporte flexível para upload de imagens locais ou inserção por link da web.
