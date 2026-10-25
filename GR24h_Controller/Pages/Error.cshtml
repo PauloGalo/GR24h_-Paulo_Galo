@@ -1,0 +1,75 @@
+﻿@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container py-3">
+   
+    <div class="card border-0 rounded-4 text-white p-4 p-md-5"
+         style="background: linear-gradient(145deg, #2a181c 0%, #130a0c 100%); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85) !important;">
+
+        <div class="row align-items-stretch justify-content-center g-4">
+
+           
+            <div class="col-12 col-lg-7 d-flex flex-column justify-content-between text-center text-lg-start">
+
+                
+                <h1 class="fw-bold text-danger mb-0 display-6" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                    <i class="bi bi-exclamation-octagon-fill me-2"></i>A Cozinha foi abaixo e o Galo ficou a dormir!
+                </h1>
+
+                <div class="my-auto py-3">
+                    <p class="fs-5 text-light opacity-90 mb-0">
+                        <i class="bi bi-lightning-charge-fill text-warning me-2"></i>Ocorreu um problema no servidor e as luzes da cozinha apagaram-se.<br />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi text-danger me-2 align-middle" viewBox="0 0 16 16">
+                            <path d="M8 1a2.5 2.5 0 0 0-2.45 2.022A2.5 2.5 0 0 0 3 5.5a2.5 2.5 0 0 0 .5 1.503A2.5 2.5 0 0 0 3 9.5a2.5 2.5 0 0 0 2.45 2.478A2.5 2.5 0 0 0 8 14a2.5 2.5 0 0 0 2.55-2.022A2.5 2.5 0 0 0 13 9.5a2.5 2.5 0 0 0-.5-1.497A2.5 2.5 0 0 0 13 5.5a2.5 2.5 0 0 0-2.55-2.478A2.5 2.5 0 0 0 8 1zm-3.5 11h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z" />
+                        </svg>Mas amigo(a), não te preocupes: <strong class="text-warning fw-bold">vamos já acordá-lo!</strong><br />
+                        
+                        <i class="bi bi-music-note-beamed text-warning me-1"></i><i class="bi bi-volume-up-fill text-warning me-2"></i>A Cozinha do Galo nunca pode ficar a dormir!
+                    </p>
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
+                    <a href="javascript:history.back()" class="btn btn-danger btn-lg rounded-pill px-4 fw-bold shadow">
+                        <i class="bi bi-alarm-fill me-2"></i>Acordar o Galo (Tentar Novamente)
+                    </a>
+                    <a asp-page="/Index" class="btn btn-light text-danger border-danger border-2 btn-lg rounded-pill px-4 fw-bold shadow">
+                        <i class="bi bi-house-door-fill me-2"></i>Ir para a Página Inicial
+                    </a>
+                </div>
+
+            </div>
+
+           
+            <div class="col-12 col-lg-5 text-center d-flex align-items-center justify-content-center">
+                <div class="p-1 rounded-4 d-inline-block w-100 border border-2 border-white shadow-lg"
+                     style="background: rgba(255, 255, 255, 0.05); max-width: 420px;">
+                    <img src="~/images/rooster-sleeping.gif"
+                         alt="O Galo adormeceu porque o servidor foi abaixo"
+                         class="img-fluid rounded-3 w-100"
+                         onerror="this.src='/logo_galo.jpg'">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-5 pt-3" style="border-top: 1px solid rgba(255,255,255,0.15);">
+            <span class="badge bg-white text-dark border border-light px-3 py-2 rounded-pill small shadow-sm fw-semibold">
+                <i class="bi bi-shield-slash-fill text-danger me-1 fs-6"></i>
+                <i class="bi bi-moon-stars-fill text-warning me-2 fs-6"></i>
+                Erro 500 • Erro Interno do Servidor
+            </span>
+
+            @if (Model.ShowRequestId)
+            {
+                <div class="mt-2">
+                    <small class="text-light opacity-50 font-monospace" style="font-size: 0.75rem;">
+                        Ref: @Model.RequestId
+                    </small>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>

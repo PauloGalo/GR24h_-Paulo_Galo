@@ -1,0 +1,223 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.AdminPersonalManagement.AdminProfileModel
+@{
+	ViewData["Title"] = "AdminProfile";
+
+}
+
+<div class="container mt-4">
+
+    @if (Model.TotalPendingRecipes > 0)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            Atenção: Tem <strong>@Model.TotalPendingRecipes</strong> receita(s) pendente(s) para visualizar e aprovar!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+   
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-dark"><i class="bi bi-shield-lock-fill text-primary"></i> Painel de Controlo</h2>
+            <p class="text-muted">Bem-vindo, @Model.AdminUser.Username. Gere o conteúdo e os utilizadores do portal.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a asp-page="/PersonalAreaManagement/PersonalData" class="btn btn-outline-secondary">
+                <i class="bi bi-gear"></i> Definições de Perfil
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-5">
+        <div class="col-md">
+            <div class="card border-0 shadow-sm bg-dark text-white p-3 rounded-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold mb-0">@Model.TotalPendingRecipes</h3>
+                        <small>Pendentes</small>
+                    </div>
+                    <i class="bi bi-hourglass-split fs-2 opacity-50"></i>
+                </div>
+                <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminPendingRecipes" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card border-0 shadow-sm bg-primary text-white p-3 rounded-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold mb-0">@Model.TotalUsers</h3>
+                        <small>Utilizadores</small>
+                    </div>
+                    <i class="bi bi-people-fill fs-2 opacity-50"></i>
+                </div>
+                <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminUserManagement" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card border-0 shadow-sm bg-info text-white p-3 rounded-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold mb-0">@Model.TotalCategories</h3>
+                        <small>Categorias</small>
+                    </div>
+                    <i class="bi bi-tags-fill fs-2 opacity-50"></i>
+                </div>
+                <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminCategoriesManagement" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card border-0 shadow-sm bg-warning text-dark p-3 rounded-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold mb-0">@Model.TotalDifficulties</h3>
+                        <small>Dificuldades</small>
+                    </div>
+                    <i class="bi bi-bar-chart-fill fs-2 opacity-25"></i>
+                </div>
+                <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminDifficultiesManagement" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card border-0 shadow-sm bg-secondary text-white p-3 rounded-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold mb-0">@Model.TotalIngredients</h3>
+                        <small>Ingredientes</small>
+                    </div>
+                    <i class="bi bi-egg-fill fs-2 opacity-50"></i>
+                </div>
+                <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminIngredientsManagement" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <div class="col-md-7 mb-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-exclamation-circle text-warning me-2"></i>Aprovação Pendente</h5>
+                    <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminPendingRecipes" class="btn btn-sm btn-primary">Ver Todas</a>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Receita</th>
+                                <th>Autor</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          
+                            @foreach (GR24h_Models.RecipeDetailsDTO recipeDto in Model.LatestPendingRecipes)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                          <a asp-page="/RecipePage" asp-route-id="@recipeDto.Recipe.Id"> 
+                                            <img src="@recipeDto.Recipe.GetFormattedImageUrl()" 
+                                                 class="rounded me-2" 
+                                                 style="width: 40px; height: 40px; object-fit: cover;">
+                                            <span class="text-truncate" style="max-width: 200px;">@recipeDto.Recipe.Title</span>
+                                          </a>
+                                        </div>
+                                    </td>
+                                    <td class="small">
+                                       
+                                        @(recipeDto.AuthorUsername != null ? recipeDto.AuthorUsername: "Desconhecido")
+                                    </td>
+                                    <td class="text-end">
+                                        <a asp-page="/RecipePage" asp-route-id="@recipeDto.Recipe.Id" class="btn btn-sm btn-outline-info">Rever</a>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.LatestPendingRecipes.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-3 text-muted small">Sem receitas pendentes.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="col-md-5 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">Atalhos de Gestão</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminCategoriesManagement" class="btn btn-light border text-start py-3">
+                            <i class="bi bi-speedometer2 me-2"></i> Gerir Lista de Categorias
+                        </a>
+                        <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminDifficultiesManagement" class="btn btn-light border text-start py-3">
+                            <i class="bi bi-speedometer2 me-2"></i> Gerir Níveis de Dificuldade
+                        </a>
+                        <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminIngredientsManagement" class="btn btn-light border text-start py-3">
+                            <i class="bi bi-basket me-2"></i> Gerir Lista de Ingredientes
+                        </a>
+                        <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminUserManagement" class="btn btn-light border text-start py-3">
+                            <i class="bi bi-person-badge me-2"></i> Gerir Permissões de Utilizadores
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+           
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Novos Membros</h5>
+                    <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminUserManagement" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                     
+                        @foreach (GR24h_Models.Users user in Model.NewestUsers)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-person-circle me-2 text-secondary"></i>
+                                    <span class="small fw-medium">@@@user.Username</span>
+                                </div>
+                                <span class="badge @(user.IsAdmin == true ? "bg-danger" : "bg-light text-dark border")">
+                                    @(user.IsAdmin ? "Admin" : "User")
+                                </span>
+                            </li>
+                        }
+                        @if (!Model.NewestUsers.Any())
+                        {
+                            <li class="list-group-item text-center py-3 text-muted small">Nenhum utilizador recente.</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stretched-link::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        content: "";
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+        transition: 0.2s ease;
+    }
+</style>
+
+

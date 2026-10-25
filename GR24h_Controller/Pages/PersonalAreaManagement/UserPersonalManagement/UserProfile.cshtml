@@ -1,0 +1,220 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.UserPersonalManagement.UserProfileModel
+@{
+
+    ViewData["Title"] = "UserProfile";
+}
+
+<div class="container mt-4">
+
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold">Olá, @Model.CurrentUser.Username! 👋</h2>
+            <p class="text-muted">Bem-vinda à tua área pessoal. Aqui podes gerir as tuas receitas e preferências.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a asp-page="/PersonalAreaManagement/PersonalData" class="btn btn-outline-primary me-2">
+                <i class="bi bi-person-gear"></i> Editar Dados
+            </a>
+            <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserCreateRecipe" class="btn btn-success shadow-sm">
+                <i class="bi bi-plus-circle"></i> Criar Receita
+            </a>
+        </div>
+    </div>
+
+
+    <div class="row g-3 mb-5">
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-primary text-white p-3 text-center rounded-4 position-relative card-hover h-100">
+                <div class="d-flex justify-content-center align-items-center mb-1">
+                    <i class="bi bi-journal-check fs-4 me-2"></i>
+                    <h3 class="fw-bold mb-0">@Model.CountApproved</h3>
+                </div>
+                <small>Receitas Publicadas</small>
+                <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserMyRecipes" class="stretched-link"></a>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-warning text-dark p-3 text-center rounded-4 position-relative card-hover h-100">
+                <div class="d-flex justify-content-center align-items-center mb-1">
+                    <i class="bi bi-hourglass-split fs-4 me-2"></i>
+                    <h3 class="fw-bold mb-0">@Model.CountPending</h3>
+                </div>
+                <small>Em Aprovação</small>
+                <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserRecipesPending" class="stretched-link"></a>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-danger text-white p-3 text-center rounded-4 position-relative card-hover h-100">
+                <div class="d-flex justify-content-center align-items-center mb-1">
+                    <i class="bi bi-heart-fill fs-4 me-2"></i>
+                    <h3 class="fw-bold mb-0">@Model.CountFavs</h3>
+                </div>
+                <small>Favoritos</small>
+                <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserFavourites" class="stretched-link"></a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-info text-white p-3 text-center rounded-4 position-relative card-hover h-100">
+                <div class="d-flex justify-content-center align-items-center mb-1">
+                    <i class="bi bi-lightbulb-fill fs-4 me-2"></i>
+                    <h3 class="fw-bold mb-0">@Model.CountSuggestions</h3>
+                </div>
+                <small>Novas Sugestões</small>
+                <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserRecipesSuggestions" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
+                    <h5 class="mb-0 fw-bold text-success">Publicadas (Recentes)</h5>
+                    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserMyRecipes" class="btn btn-sm btn-link text-decoration-none">Ver Tudo</a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @foreach (GR24h_Models.Recipe recipe in Model.RecentMyRecipes)
+                        {
+                            <li class="list-group-item p-0 border-0 border-bottom">
+                                <a asp-page="/RecipePage" asp-route-id="@recipe.Id" class="d-flex align-items-center py-3 px-3 text-decoration-none text-dark card-hover">
+                                    <img src="@recipe.GetFormattedImageUrl()"
+                                         class="rounded me-3"
+                                         style="width: 50px; height: 50px; object-fit: cover;"
+                                         onerror="this.src='/images/default-recipe.jpg'" />
+
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">@recipe.Title</h6>
+                                        <small class="text-muted">Nota: @((Model.RecipeRatings?. GetValueOrDefault(recipe.Id, 0m) > 0m ? Model.RecipeRatings.GetValueOrDefault(recipe.Id, 0m).ToString("F1") : "N/A")) ★</small>
+                                    </div>
+                                    <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i>Aprovada</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
+                    <h5 class="mb-0 fw-bold text-warning">Aguardar Aprovação</h5>
+                    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserRecipesPending" class="btn btn-sm btn-link text-decoration-none">Ver Tudo</a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @foreach (GR24h_Models.Recipe recipe in Model.RecentPending)
+                        { 
+                            <li class="list-group-item d-flex align-items-center py-3 border-0 border-bottom">
+                                <img src="@recipe.GetFormattedImageUrl()" 
+                                     class="rounded me-3" 
+                                     style="width: 50px; height: 50px; object-fit: cover;"
+                                     onerror="this.src='/images/default-recipe.jpg'"/>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">@recipe.Title</h6>
+                                    <small class="text-muted">Enviada recentemente</small>
+                                </div>
+                                <span class="badge bg-warning text-dark rounded-pill">Pendente</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                    <h5 class="mb-0 fw-bold text-danger">Os Teus Favoritos 🔥</h5>
+                    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserFavourites" class="btn btn-sm btn-link text-decoration-none">Ver Todos</a>
+                </div>
+                <div class="card-body py-4">
+                    <div class="d-flex gap-4 overflow-auto pb-2" style="scrollbar-width: thin;">
+                        @foreach (GR24h_Models.Recipe recipe in Model.RecentFavourites)
+                        {
+                            <a asp-page="/RecipePage" asp-route-id="@recipe.Id" class="text-decoration-none text-dark card-hover" style="min-width: 150px;">
+                                <div class="text-center">
+                                    <img src="@recipe.GetFormattedImageUrl()" 
+                                         class="rounded-circle mb-2 shadow-sm" 
+                                         style="width: 100px; height: 100px; object-fit: cover;"
+                                         onerror="this.src='/images/default-recipe.jpg'" />
+                                    <p class="small fw-bold text-truncate px-2">@recipe.Title</p>
+                                  
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 bg-light">
+                <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center border-bottom">
+                    <h5 class="mb-0 fw-bold text-info">Descobre Algo Novo ✨</h5>
+                    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserRecipesSuggestions" class="btn btn-sm btn-info text-white rounded-pill px-3">Explorar Mais</a>
+                </div>
+                <div class="card-body py-4">
+                    <div class="d-flex gap-4 overflow-auto pb-2" style="scrollbar-width: thin;">
+                        @foreach (GR24h_Models.Recipe recipe in Model.RecentSuggestions)
+                        {
+                            <a asp-page="/RecipePage" asp-route-id="@recipe.Id" class="text-decoration-none text-dark card-hover" style="min-width: 150px;">
+                                <div class="text-center">
+                                    <div class="position-relative d-inline-block">
+                                        <img src="@recipe.GetFormattedImageUrl()"
+                                                  class="rounded-4 mb-2 shadow-sm" 
+                                                  style="width: 120px; height: 120px; object-fit: cover;"
+                                                  onerror="this.src='/images/default-recipe.jpg'" />
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info border border-light">Novo</span>
+                                    </div>
+                                    <p class="small fw-bold text-truncate px-2">@recipe.Title</p>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            cursor: pointer;
+        }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .d-flex.overflow-auto::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .d-flex.overflow-auto::-webkit-scrollbar-thumb {
+        background: #dee2e6;
+        border-radius: 10px;
+    }
+</style>
+

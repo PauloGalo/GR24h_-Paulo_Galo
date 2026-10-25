@@ -1,0 +1,317 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container mt-5">
+
+    <div class="row align-items-center py-5 bg-light rounded-4 shadow-sm mb-5">
+        <div class="col-md-7 px-5 text-start">
+            <h1 class="display-4 fw-bold text-dark mb-3">
+                Onde o <span class="text-danger">Galo</span> canta, <br>
+                a receita nasce.
+            </h1>
+            <p class="lead text-muted fs-4">
+                Bem-vindo ao <strong>GaloReceitas24horas</strong>. <br>
+                Aqui, uma receita ganha vida assim que o café acorda o galo que há entre nós.
+                <br><span class="d-block mt-2 fw-bold text-dark">Explore a alma da nossa cozinha!</span>
+            </p>
+            <div class="mt-4">
+                <a href="#destaques" class="btn btn-danger btn-lg px-4 me-2 shadow">Ver Novidades</a>
+                <a asp-page="/Search" class="btn btn-outline-dark btn-lg px-4">Explorar Tudo</a>
+            </div>
+        </div>
+
+        <div class="col-md-5 text-center mt-4 mt-md-0">
+            <img src="/images/chef_galo.gif" alt="Galo Chef" class="img-fluid rounded-circle shadow-lg border border-4 border-white" style="width: 300px; height: 300px; object-fit: cover;">
+        </div>
+    </div>
+
+    <div id="destaques" class="py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-dark m-0"><i class="bi bi-trophy-fill text-warning me-2"></i>Melhor Avaliadas</h2>
+            <a asp-page="/Search" asp-route-SortBy="rating_desc" class="btn btn-link text-danger text-decoration-none fw-bold">Ver Mais &rarr;</a>
+        </div>
+
+        <div class="row g-4">
+            @foreach (GR24h_Models.RecipeDetailsDTO topRatedRecipe in Model.TopRatedRecipes)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift rounded-4 overflow-hidden">
+
+                        
+                        <div class="position-relative">
+
+                            <div class="position-absolute top-0 start-0 m-2 z-1">
+                                <span class="badge bg-warning text-dark text-uppercase fw-bold px-3 py-1 rounded-pill shadow-sm">
+                                    <i class="bi bi-trophy-fill me-1"></i>Top
+                                </span>
+                            </div>
+
+                          
+                            <div class="position-absolute bottom-0 start-0 m-2 z-1">
+                                <span class="badge bg-dark bg-opacity-75 text-white fw-bold px-2 py-1 shadow-sm">
+                                    <i class="bi bi-fire text-danger me-1"></i>Score: @topRatedRecipe.PopularityScore.ToString("F1")
+                                </span>
+                            </div>
+
+                            
+                            <div class="position-absolute bottom-0 end-0 m-2 z-1">
+                                <span class="badge bg-dark bg-opacity-75 text-warning fw-bold px-2 py-1 shadow-sm">
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    @(topRatedRecipe.Recipe.Rating.HasValue? topRatedRecipe.Recipe.Rating.Value.ToString("F1") : "N/A")
+                                </span>
+                            </div>
+
+                            <a asp-page="/RecipePage" asp-route-id="@topRatedRecipe.Recipe.Id">
+                                <img src="@topRatedRecipe.Recipe.GetFormattedImageUrl()"
+                                     class="card-img-top"
+                                     style="height: 220px; object-fit: cover;"
+                                     alt="@topRatedRecipe.Recipe.Title"
+                                     onerror="this.src='/images/default-recipe.jpg'">
+                            </a>
+                        </div>
+
+                        
+                        <div class="card-body">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0 fw-bold text-truncate me-2" title="@topRatedRecipe.Recipe.Title">
+                                    <a asp-page="/RecipePage" asp-route-id="@topRatedRecipe.Recipe.Id" class="text-decoration-none text-dark">
+                                        @topRatedRecipe.Recipe.Title
+                                    </a>
+                                </h5>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                                    @topRatedRecipe.CategoryName
+                                </span>
+                            </div>
+
+                           
+                            <div class="d-flex justify-content-between align-items-center text-muted small mt-3">
+                                <span class="text-truncate me-1" title="@topRatedRecipe.AuthorUsername">
+                                    <i class="bi bi-person-circle me-1"></i>@topRatedRecipe.AuthorUsername
+                                </span>
+                                <span class="text-nowrap mx-1">
+                                    <i class="bi bi-clock me-1"></i>@topRatedRecipe.Recipe.PreparationTime
+                                </span>
+                                <span class="text-nowrap ms-1">
+                                    <i class="bi bi-bar-chart me-1"></i>@topRatedRecipe.DifficultyName
+                                </span>
+                            </div>
+                        </div>
+
+                       
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <div class="d-grid">
+                                <a asp-page="/RecipePage" asp-route-id="@topRatedRecipe.Recipe.Id" class="btn btn-primary rounded-pill btn-sm">
+                                    Ver Receita
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <div class="py-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-dark m-0"><i class="bi bi-fire text-danger me-2"></i>Mais Populares</h2>
+            <a asp-page="/Search" asp-route-SortBy="popular" class="btn btn-link text-danger text-decoration-none fw-bold">Ver Mais &rarr;</a>
+        </div>
+
+        <div class="row g-4">
+            @foreach (GR24h_Models.RecipeDetailsDTO popularRecipe in Model.PopularRecipes)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift rounded-4 overflow-hidden">
+
+                       
+                        <div class="position-relative">
+
+                            <div class="position-absolute top-0 start-0 m-2 z-1">
+                                <span class="badge bg-danger text-white text-uppercase fw-bold px-3 py-1 rounded-pill shadow-sm">
+                                    <i class="bi bi-fire me-1"></i>Popular
+                                </span>
+                            </div>
+
+                            <div class="position-absolute bottom-0 start-0 m-2 z-1">
+                                <span class="badge bg-dark bg-opacity-75 text-white fw-bold px-2 py-1 shadow-sm">
+                                    <i class="bi bi-fire text-danger me-1"></i>Score: @popularRecipe.PopularityScore.ToString("F1")
+                                </span>
+                            </div>
+
+                            <div class="position-absolute bottom-0 end-0 m-2 z-1">
+                                <span class="badge bg-dark bg-opacity-75 text-warning fw-bold px-2 py-1 shadow-sm">
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    @(popularRecipe.Recipe.Rating.HasValue? popularRecipe.Recipe.Rating.Value.ToString("F1") : "N/A")
+                                </span>
+                            </div>
+
+                            <a asp-page="/RecipePage" asp-route-id="@popularRecipe.Recipe.Id">
+                                <img src="@popularRecipe.Recipe.GetFormattedImageUrl()"
+                                     class="card-img-top"
+                                     style="height: 220px; object-fit: cover;"
+                                     alt="@popularRecipe.Recipe.Title"
+                                     onerror="this.src='/images/default-recipe.jpg'">
+                            </a>
+                        </div>
+
+                        
+                        <div class="card-body">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0 fw-bold text-truncate me-2" title="@popularRecipe.Recipe.Title">
+                                    <a asp-page="/RecipePage" asp-route-id="@popularRecipe.Recipe.Id" class="text-decoration-none text-dark">
+                                        @popularRecipe.Recipe.Title
+                                    </a>
+                                </h5>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                                    @popularRecipe.CategoryName
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center text-muted small mt-3">
+                                <span class="text-truncate me-1" title="@popularRecipe.AuthorUsername">
+                                    <i class="bi bi-person-circle me-1"></i>@popularRecipe.AuthorUsername
+                                </span>
+                                <span class="text-nowrap mx-1">
+                                    <i class="bi bi-clock me-1"></i>@popularRecipe.Recipe.PreparationTime
+                                </span>
+                                <span class="text-nowrap ms-1">
+                                    <i class="bi bi-bar-chart me-1"></i>@popularRecipe.DifficultyName
+                                </span>
+                            </div>
+                        </div>
+
+                       
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <div class="d-grid">
+                                <a asp-page="/RecipePage" asp-route-id="@popularRecipe.Recipe.Id" class="btn btn-primary rounded-pill btn-sm">
+                                    Ver Receita
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+   
+    <div id="novidades" class="py-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-dark m-0">
+                <i class="bi bi-clock-history text-primary me-2"></i> Últimas Novidades
+            </h2>
+            <a asp-page="/Search" asp-route-SortBy="newest" class="btn btn-link text-danger text-decoration-none fw-bold">Ver Mais &rarr;</a>
+        </div>
+
+        <div class="row g-4">
+            @foreach (GR24h_Models.RecipeDetailsDTO newestRecipe in Model.NewestRecipes)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift rounded-4 overflow-hidden">
+
+                        <div class="position-relative">
+                          
+                            <div class="position-absolute top-0 start-0 m-2 z-1">
+                                <span class="badge bg-primary text-white text-uppercase fw-bold px-3 py-1 rounded-pill shadow-sm">
+                                    Novo
+                                </span>
+                            </div>
+
+                           
+                            <div class="position-absolute bottom-0 start-0 m-2 z-1">
+                                <span class="badge bg-dark bg-opacity-75 text-white fw-bold px-2 py-1 shadow-sm">
+                                    <i class="bi bi-fire text-danger me-1"></i>Score: @newestRecipe.PopularityScore.ToString("F1")
+                                </span>
+                            </div>
+
+                          
+                            <div class="position-absolute bottom-0 end-0 m-2 z-1">
+                                <span class="badge bg-dark bg-opacity-75 text-warning fw-bold px-2 py-1 shadow-sm">
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    @(newestRecipe.Recipe.Rating.HasValue? newestRecipe.Recipe.Rating.Value.ToString("F1") : "N/A")
+                                </span>
+                            </div>
+
+                            <a asp-page="/RecipePage" asp-route-id="@newestRecipe.Recipe.Id">
+                                <img src="@newestRecipe.Recipe.GetFormattedImageUrl()"
+                                     class="card-img-top"
+                                     style="height: 220px; object-fit: cover;"
+                                     alt="@newestRecipe.Recipe.Title"
+                                     onerror="this.src='/images/default-recipe.jpg'">
+                            </a>
+                        </div>
+
+                        
+                        <div class="card-body">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0 fw-bold text-truncate me-2" title="@newestRecipe.Recipe.Title">
+                                    <a asp-page="/RecipePage" asp-route-id="@newestRecipe.Recipe.Id" class="text-decoration-none text-dark">
+                                        @newestRecipe.Recipe.Title
+                                    </a>
+                                </h5>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                                    @newestRecipe.CategoryName
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center text-muted small mt-3">
+                                <span class="text-truncate me-1" title="@newestRecipe.AuthorUsername">
+                                    <i class="bi bi-person-circle me-1"></i>@newestRecipe.AuthorUsername
+                                </span>
+                                <span class="text-nowrap mx-1">
+                                    <i class="bi bi-clock me-1"></i>@newestRecipe.Recipe.PreparationTime
+                                </span>
+                                <span class="text-nowrap ms-1">
+                                    <i class="bi bi-bar-chart me-1"></i>@newestRecipe.DifficultyName
+                                </span>
+                            </div>
+                        </div>
+
+                       
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <div class="d-grid">
+                                <a asp-page="/RecipePage" asp-route-id="@newestRecipe.Recipe.Id" class="btn btn-primary rounded-pill btn-sm">
+                                    Ver Receita
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="py-5 text-center">
+        <hr class="mb-5" />
+        <h2 class="fw-bold">Pronto para meter as mãos na massa?</h2>
+        <p class="text-muted fs-5">Junta-te à nossa comunidade e descobre sabores únicos todos os dias.</p>
+    </div>
+</div>
+
+<style>
+    .hover-lift {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+        }
+
+    .bg-primary-subtle {
+        background-color: #e7f1ff;
+    }
+</style>
+
+   

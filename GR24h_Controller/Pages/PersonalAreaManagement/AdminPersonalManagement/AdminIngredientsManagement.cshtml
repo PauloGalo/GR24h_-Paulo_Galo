@@ -1,0 +1,134 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.AdminPersonalManagement.AdminIngredientsManagementModel
+@{
+	ViewData["Title"] = "Gestão de Ingredientes";
+
+}
+
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom">
+
+        <ul class="nav nav-tabs border-0 m-0">
+
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-page="./AdminCategoriesManagement">Categorias</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-page="./AdminDifficultiesManagement">Dificuldades</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active fw-bold text-danger" href="#">Ingredientes</a>
+            </li>
+        </ul>
+
+        <div class="btn-group shadow-sm">
+            <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminProfile"
+               asp-route-id="@HttpContext.Session.GetInt32("UserId")"
+               class="btn btn-sm btn-outline-dark">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+
+            <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminPendingRecipes"
+               class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-clock-history"></i> Pendentes
+            </a>
+
+            <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminUserManagement"
+               class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-people"></i> Users
+            </a>
+        </div>
+
+    </div>
+
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">@Model.ErrorMessage</div>
+    }
+
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body bg-light">
+            <h5 class="card-title fw-bold mb-3">Novo Ingrediente</h5>
+            <form method="post" asp-page-handler="Add" class="row g-2">
+                <div class="col-md-10">
+                    <input type="text" asp-for="Name" class="form-control" placeholder="Ex: Sal, Cebola, Azeite..." required>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success w-100 fw-bold">ADICIONAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 80px" class="ps-4">ID</th>
+                    <th>Ingrediente</th>
+                    <th class="text-end pe-4">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (GR24h_Models.Ingredient ing in Model.Ingredients)
+                {
+                    <tr>
+                        <td class="ps-4 text-muted small">#@ing.Id</td>
+                        <td>
+                            <div id="display-@ing.Id" class="fw-bold text-secondary">@ing.Name</div>
+                            <form id="edit-@ing.Id" method="post" asp-page-handler="Update" class="d-none d-flex gap-2">
+                                <input type="hidden" name="id" value="@ing.Id" />
+                                <input type="text" name="name" value="@ing.Name" class="form-control form-control-sm" required />
+                                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-check-lg"></i></button>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="toggleEdit('@ing.Id')"><i class="bi bi-x-lg"></i></button>
+                            </form>
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="toggleEdit('@ing.Id')">Editar</button>
+
+                               
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteIngredientModal-@ing.Id">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                             
+                                <div class="modal fade" id="deleteIngredientModal-@ing.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title fw-bold">Eliminar Ingrediente</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body py-4 text-start">
+                                                <p class="mb-1">Tem a certeza que deseja eliminar permanentemente o ingrediente:</p>
+                                                <p class="fw-bold fs-5 text-dark mb-2"><strong>"@ing.Name"</strong>?</p>
+                                                <p class="text-muted small mb-0">Esta ação não pode ser desfeita.</p>
+                                            </div>
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                                <form method="post" asp-page-handler="Delete" asp-route-id="@ing.Id">
+                                                    <button type="submit" class="btn btn-danger btn-sm px-3">Eliminar Definitivamente</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function toggleEdit(id) {
+        document.getElementById('display-' + id).classList.toggle('d-none');
+        document.getElementById('edit-' + id).classList.toggle('d-none');
+    }
+</script>
+

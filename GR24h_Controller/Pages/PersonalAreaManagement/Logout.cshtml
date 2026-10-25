@@ -1,0 +1,54 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.LogoutModel
+@{
+
+	ViewData["Title"] = "Sair da Conta";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-4 p-4 text-center">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <i class="bi bi-door-open display-1 text-warning"></i>
+                    </div>
+
+                    <h2 class="fw-bold mb-3">Já te vais embora?</h2>
+                    <p class="text-muted mb-4">
+                        Tens a certeza que pretendes terminar a tua sessão no portal de receitas?
+                        Terás de fazer login novamente para submeter receitas ou gerir os teus favoritos.
+                    </p>
+
+                    <form method="post" asp-page-handler="Logout">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg shadow-sm">
+                                <i class="bi bi-box-arrow-right me-2"></i> Confirmar e Sair
+                            </button>
+
+                            <a href="javascript:history.back()" class="btn btn-light border">
+                                Continuar a Cozinhar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <p class="text-center mt-4 text-muted small">
+                Obrigado por partilhares o teu talento connosco!
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .bi-door-open {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .bi-door-open {
+        transform: translateX(5px);
+    }
+</style>
+

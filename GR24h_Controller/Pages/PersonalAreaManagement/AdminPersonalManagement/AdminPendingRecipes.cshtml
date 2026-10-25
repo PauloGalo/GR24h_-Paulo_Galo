@@ -1,0 +1,129 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.AdminPersonalManagement.AdminPendingRecipesModel
+@{
+	ViewData["Title"] = "Moderação de Receitas";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+
+        <div class="d-flex align-items-center">
+            <h2 class="fw-bold mb-0 me-3">Moderação de Receitas</h2>
+            <span class="badge bg-warning text-dark shadow-sm">@Model.PendingRecipes.Count Pendentes</span>
+        </div>
+
+
+        <div class="btn-group shadow-sm">
+
+            <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminProfile"
+               asp-route-id="@HttpContext.Session.GetInt32("UserId")"
+               class="btn btn-sm btn-outline-dark">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+
+
+            <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminUserManagement"
+               class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-people"></i> Users
+            </a>
+
+
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-list-check"></i> Listas Base
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li><a class="dropdown-item" asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminCategoriesManagement"><i class="bi bi-tags me-2"></i>Categorias</a></li>
+                    <li><a class="dropdown-item" asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminDifficultiesManagement"><i class="bi bi-bar-chart me-2"></i>Dificuldades</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminIngredientsManagement"><i class="bi bi-basket me-2"></i>Ingredientes</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        bool isReject = Model.StatusMessage.Contains("rejeitada", StringComparison.OrdinalIgnoreCase);
+        string alertClass = isReject ? "alert-danger" : "alert-success";
+
+        <div class="alert @alertClass shadow-sm mb-4" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i> @Model.StatusMessage
+        </div>
+
+    }
+
+    <div class="card border-0 shadow-sm">
+        <table class="table align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th class="ps-3">Título</th>
+                    <th>Autor</th>
+                    <th>Tempo</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.PendingRecipes.Count == 0)
+                {
+                    <tr><td colspan="4" class="text-center py-5">Não há receitas pendentes.</td></tr>
+                }
+                @foreach (GR24h_Models.RecipeDetailsDTO recipeDto in Model.PendingRecipes)
+                {
+                    <tr>
+                       
+                        <td class="ps-3 fw-bold">
+                            <a asp-page="/RecipePage" asp-route-id="@recipeDto.Recipe.Id" class="text-decoration-none text-dark">
+                                @recipeDto.Recipe.Title
+                            </a>
+                        </td>
+                        <td>@@@recipeDto.AuthorUsername</td>
+                        <td>@recipeDto.Recipe.PreparationTime</td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <a asp-page="/RecipePage" asp-route-id="@recipeDto.Recipe.Id" class="btn btn-sm btn-outline-dark" target="_blank">
+                                    Rever
+                                </a>
+
+                                <form method="post" asp-page-handler="Approve" asp-route-id="@recipeDto.Recipe.Id">
+                                    <button type="submit" class="btn btn-sm btn-success mx-1">Aprovar</button>
+                                </form>
+
+                               
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@recipeDto.Recipe.Id">
+                                    X
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+               
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@foreach (GR24h_Models.RecipeDetailsDTO recipeDto in Model.PendingRecipes)
+{
+    <div class="modal fade" id="deleteModal-@recipeDto.Recipe.Id" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold">Eliminar Receita</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-4 text-start">
+                    <p class="mb-1">Tem a certeza que deseja eliminar permanentemente a receita:</p>
+                    <p class="fw-bold fs-5 text-dark mb-2"><strong>"@recipeDto.Recipe.Title"</strong>?</p>
+                    <p class="text-muted small mb-0">Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <form method="post" asp-page-handler="Reject" asp-route-id="@recipeDto.Recipe.Id">
+                        <button type="submit" class="btn btn-danger btn-sm px-3">Eliminar Definitivamente</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

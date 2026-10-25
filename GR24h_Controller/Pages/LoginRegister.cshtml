@@ -1,0 +1,120 @@
+﻿@page
+@model GR24h_Controller.Pages.LoginRegisterModel
+@{
+    ViewData["Title"] = "Entrar ou Registar";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="text-center mb-4">
+                <div class="d-flex align-items-center justify-content-center">
+                    <img src="/images/logo_galo.jpg" alt="Galo" width="65" height="65" class="me-2 rounded-circle" style="object-fit: contain;">
+
+                    <h2 class="fw-bold m-0" style="font-size: 2rem; letter-spacing: -1px;">
+                        <span class="text-dark">Receitas</span><span class="text-danger">24horas</span>
+                    </h2>
+                </div>
+
+                <p class="text-muted small mt-3">Cozinha com alma, coração e café.</p>
+            </div>
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-white border-0 p-0 overflow-hidden rounded-top-4">
+                    <ul class="nav nav-pills nav-justified" id="authTabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active fw-bold py-3 border-0 rounded-0" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">LOGIN</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link fw-bold py-3 border-0 rounded-0" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button">REGISTAR</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-body p-4">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show small" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> @Model.ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="tab-content" id="authTabsContent">
+
+                        <div class="tab-pane fade show active" id="login" role="tabpanel">
+                            <form method="post" asp-page-handler="Login">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Username</label>
+                                    <input asp-for="LoginUsername" class="form-control" placeholder="O teu username" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Palavra-Passe</label>
+                                    <input asp-for="LoginPassword" type="password" class="form-control" placeholder="••••••••" required />
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100 fw-bold py-2 mt-2 shadow-sm">ENTRAR</button>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="register" role="tabpanel">
+                            <form method="post" asp-page-handler="Register">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small fw-bold">Nome</label>
+                                        <input asp-for="FirstName" class="form-control" placeholder="Ex: Paulo" required />
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small fw-bold">Apelido</label>
+                                        <input asp-for="LastName" class="form-control" placeholder="Ex: Galo" required />
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Email</label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="exemplo@gmail.com" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Username</label>
+                                    <input asp-for="Username" class="form-control" placeholder="Como te vamos chamar?" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Palavra-Passe</label>
+                                    <input asp-for="Password" type="password" class="form-control" placeholder="Mínimo 8 caracteres" required />
+                                </div>
+                                <button type="submit" class="btn btn-dark w-100 fw-bold py-2 mt-2 shadow-sm">CRIAR CONTA</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a asp-page="/Index" class="text-muted small text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i> Voltar para a Homepage
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .nav-pills .nav-link {
+        color: #6c757d;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+        .nav-pills .nav-link.active {
+            background-color: #ffffff;
+            color: #dc3545;
+            border-bottom: 3px solid #dc3545 !important;
+        }
+
+    .form-control:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.1);
+    }
+</style>

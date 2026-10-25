@@ -1,0 +1,151 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.AdminPersonalManagement.AdminUserManagementModel
+@{
+
+	ViewData["Title"] = "Gestão de Utilizadores";
+
+}
+
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+
+
+        <div class="d-flex align-items-center">
+            <h2 class="fw-bold mb-0 me-3">Gestão de Contas</h2>
+            <span class="badge bg-secondary shadow-sm">Total: @Model.Users.Count</span>
+        </div>
+
+        <div class="btn-group shadow-sm">
+
+            <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminProfile"
+               asp-route-id="@HttpContext.Session.GetInt32("UserId")"
+               class="btn btn-sm btn-outline-dark">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+
+
+            <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminPendingRecipes"
+               class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-clock-history"></i> Pendentes
+            </a>
+
+
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-list-check"></i> Listas Base
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li><a class="dropdown-item" asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminCategoriesManagement"><i class="bi bi-tags me-2"></i>Categorias</a></li>
+                    <li><a class="dropdown-item" asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminDifficultiesManagement"><i class="bi bi-bar-chart me-2"></i>Dificuldades</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminIngredientsManagement"><i class="bi bi-basket me-2"></i>Ingredientes</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="ps-3">ID</th>
+                        <th>Utilizador</th>
+                        <th>Email</th>
+                        <th>Cargo</th>
+                        <th>Estado</th>
+                        <th>Tentativas</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (GR24h_Models.Users user in Model.Users)
+                    {
+                        <tr>
+                            <td class="ps-3 text-muted">@user.Id</td>
+                            <td>
+                                <div class="fw-bold">@user.FirstName @user.LastName</div>
+                                <small class="text-muted">@@@user.Username</small>
+                            </td>
+                            <td>@user.Email</td>
+                            <td>
+                                @if (user.IsAdmin == true)
+                                {
+                                    <span class="badge bg-primary">Admin</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-dark border">User</span>
+                                }
+                            </td>
+                            <td>
+                                @if (user.IsLocked)
+                                {
+                                    <span class="text-danger"><i class="bi bi-lock-fill"></i> Bloqueado</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success"><i class="bi bi-check-circle"></i> Ativo</span>
+                                }
+                            </td>
+                            <td class="text-center">@user.FailedLoginAttempts / 5</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <form method="post" asp-page-handler="ToggleLock" asp-route-targetId="@user.Id">
+                                        <button type="submit" class="btn btn-sm @(user.IsLocked ? "btn-warning" : "btn-outline-warning")"
+                                                title="@(user.IsLocked ? "Desbloquear" : "Bloquear")">
+                                            <i class="bi @(user.IsLocked ? "bi-unlock" : "bi-lock")"></i>
+                                            @(user.IsLocked ? "Desbloquear" : "Bloquear")
+                                        </button>
+                                    </form>
+
+                                    @if (!user.IsAdmin == true || Model.Users.Count(u => u.IsAdmin == true) > 1)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal-@user.Id">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+
+                                        <div class="modal fade" id="deleteUserModal-@user.Id" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0 shadow">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title fw-bold">Eliminar Utilizador</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body py-4 text-start">
+                                                        <p class="mb-1">Tem a certeza que deseja eliminar permanentemente o utilizador:</p>
+                                                        <p class="fw-bold fs-5 text-dark mb-2"><strong>"@user.Username"</strong>?</p>
+                                                        <p class="text-muted small mb-0">Esta ação não pode ser desfeita.</p>
+                                                    </div>
+                                                    <div class="modal-footer bg-light">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                                        <form method="post" asp-page-handler="DeleteUser" asp-route-targetId="@user.Id">
+                                                            <button type="submit" class="btn btn-danger btn-sm px-3">Eliminar Definitivamente</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

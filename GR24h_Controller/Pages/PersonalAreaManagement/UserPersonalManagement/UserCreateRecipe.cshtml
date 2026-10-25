@@ -1,0 +1,303 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.UserPersonalManagement.UserCreateRecipeModel
+@{
+
+	ViewData["Title"] = "Criar Nova Receita";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Partilhar Nova Receita</h2>
+        <span class="badge bg-warning text-dark">Estado: Pendente de Aprovação</span>
+    </div>
+    <p class="text-muted">Partilha a tua criação com a comunidade. Após submeteres, a nossa equipa irá validar a receita.</p>
+    <hr />
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        
+        <div class="row">
+            
+            <div class="col-md-7">
+                <div class="card p-4 shadow-sm mb-4 h-100">
+                    <h5 class="mb-3 text-primary">Informações Gerais</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Title" class="form-label">Título da Receita</label>
+                        <input asp-for="Input.Title" class="form-control" placeholder="Ex: Arroz de Pato à Antiga" required />
+                        <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Input.CategoryId" class="form-label">Categoria</label>
+                            <select asp-for="Input.CategoryId" asp-items="Model.CategoryOptions" class="form-select" required>
+                                <option value="">-- Selecionar --</option>
+                            </select>
+                            <span asp-validation-for="Input.CategoryId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Input.DifficultyId" class="form-label">Dificuldade</label>
+                            <select asp-for="Input.DifficultyId" asp-items="Model.DifficultyOptions" class="form-select" required>
+                                <option value="">-- Selecionar --</option>
+                            </select>
+                            <span asp-validation-for="Input.DifficultyId" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.PreparationTime" class="form-label">Tempo de Preparação (ex: 45 min)</label>
+                        <input asp-for="Input.PreparationTime" class="form-control" required />
+                        <span asp-validation-for="Input.PreparationTime" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.PreparationMethod" class="form-label">Método de Preparação</label>
+                        <textarea asp-for="Input.PreparationMethod" class="form-control" rows="6" placeholder="Passo a passo..." required></textarea>
+                        <span asp-validation-for="Input.PreparationMethod" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+          
+            <div class="col-md-5">
+                <div class="card p-4 shadow-sm mb-4 h-100 bg-light">
+                    <h5 class="mb-3 text-primary">Imagem da Receita</h5>
+
+                   
+                    <ul class="nav nav-pills nav-fill mb-3" id="imageTypeTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-item btn btn-outline-primary active w-100 me-1" id="file-tab" data-bs-toggle="pill" data-bs-target="#file-upload" type="button" role="tab">
+                                <i class="bi bi-upload"></i> Do Computador
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-item btn btn-outline-primary w-100 ms-1" id="url-tab" data-bs-toggle="pill" data-bs-target="#url-upload" type="button" role="tab">
+                                <i class="bi bi-link-45deg"></i> Link da Web
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mb-3" id="imageTypeTabContent">
+                    
+                        <div class="tab-pane fade show active" id="file-upload" role="tabpanel">
+                            <label asp-for="Input.ImageUpload" class="form-label fw-bold">Carregar Ficheiro</label>
+                            <input asp-for="Input.ImageUpload" id="inputImageFile" type="file" class="form-control" accept="image/*" onchange="previewFileImage(this)" />
+                            <div class="form-text text-muted small">Selecione um ficheiro do dispositivo (.jpg, .png).</div>
+                            <span asp-validation-for="Input.ImageUpload" class="text-danger small"></span>
+                        </div>
+
+                       
+                        <div class="tab-pane fade" id="url-upload" role="tabpanel">
+                            <label asp-for="Input.ImageUrl" class="form-label fw-bold">URL da Imagem</label>
+                            <input asp-for="Input.ImageUrl" id="inputImageUrl" type="url" class="form-control" placeholder="https://exemplo.com/foto.jpg" oninput="previewUrlImage(this.value)" />
+                            <div class="form-text text-muted small">Cole um link direto para uma imagem web.</div>
+                            <span asp-validation-for="Input.ImageUrl" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    
+                    <label class="form-label fw-bold mb-2">Pré-visualização:</label>
+                    <div class="d-flex justify-content-center align-items-center bg-white border rounded shadow-sm p-2" style="min-height: 220px; max-height: 280px; overflow: hidden;">
+                        <img id="imagePreview" src="#" alt="Antevisão da Imagem" class="img-fluid rounded d-none" style="max-height: 260px; object-fit: cover;" />
+                        <div id="imagePlaceholder" class="text-center text-muted py-4">
+                            <i class="bi bi-image" style="font-size: 3rem;"></i>
+                            <p class="mb-0 small">Nenhuma imagem selecionada</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="card p-4 shadow-sm mb-4 border-primary">
+            <h5 class="mb-3 text-primary">Lista de Ingredientes</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ingrediente (Escolher ou Criar Novo)</th>
+                            <th style="width: 160px;">Quantidade</th>
+                            <th style="width: 200px;">Unidade</th>
+                            <th style="width: 100px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ingredients-body">
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addIngredientRow()">
+                    <i class="bi bi-plus-circle"></i> Adicionar mais um ingrediente
+                </button>
+            </div>
+        </div>
+
+        
+        <div class="card p-4 shadow-sm mb-4 bg-light border-0">
+            <h5 class="mb-3 text-success">A Tua Avaliação Inicial</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Input.InitialRatingScore" class="form-label fw-bold">A tua nota (Opcional)</label>
+                    <select asp-for="Input.InitialRatingScore" class="form-select">
+                        <option value="">☆☆☆☆☆ (Sem avaliação)</option>
+                        <option value="1">1 ★☆☆☆☆ (Básica)</option>
+                        <option value="2">2 ★★☆☆☆ (Razoável)</option>
+                        <option value="3">3 ★★★☆☆ (Boa)</option>
+                        <option value="4">4 ★★★★☆ (Muito Boa)</option>
+                        <option value="5">5 ★★★★★ (Perfeita)</option>
+                    </select>
+                    <span class="form-text text-muted">Se não avaliares, a receita será submetida sem classificação inicial.</span>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="card p-4 shadow-sm mb-4">
+            <h5 class="mb-3 text-primary">O Teu Comentário Pessoal</h5>
+            <div class="mb-2">
+                <label asp-for="Input.InitialCommentContent" class="form-label">Notas ou dicas sobre a receita (Opcional)</label>
+                <textarea asp-for="Input.InitialCommentContent" class="form-control" rows="3" placeholder="Diz algo sobre esta receita..."></textarea>
+                <span class="form-text text-muted">Máximo 300 caracteres.</span>
+            </div>
+        </div>
+
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+            <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserProfile" class="btn btn-outline-secondary px-4">
+                <i class="bi bi-house"></i> Voltar ao Dashboard
+            </a>
+
+            <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserCreateRecipe" class="btn btn-outline-danger px-4">
+                Cancelar Criação
+            </a>
+
+            <button type="submit" class="btn btn-success btn-lg px-5">
+                Submeter Receita
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        
+        function previewFileImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('imagePlaceholder');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('d-none');
+                    placeholder.classList.add('d-none');
+                };
+                reader.readAsDataURL(input.files[0]);
+                document.getElementById('inputImageUrl').value = ''; 
+            } else {
+                hidePreview();
+            }
+        }
+
+        function previewUrlImage(url) {
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('imagePlaceholder');
+
+            if (url && url.trim().length > 5) {
+                preview.src = url;
+                preview.classList.remove('d-none');
+                placeholder.classList.add('d-none');
+                document.getElementById('inputImageFile').value = ''; 
+            } else {
+                hidePreview();
+            }
+        }
+
+        function hidePreview() {
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('imagePlaceholder');
+            preview.src = '#';
+            preview.classList.add('d-none');
+            placeholder.classList.remove('d-none');
+        }
+
+        
+        let ingredientIndex = 0;
+        const existingIngredients = @Html.Raw(Json.Serialize(Model.IngredientOptions)) || [];
+
+        function addIngredientRow() {
+            const body = document.getElementById('ingredients-body');
+            const row = document.createElement('tr');
+
+            let optionsHtml = '<option value="">-- Selecionar Existente --</option>';
+            existingIngredients.forEach(ing => {
+                const text = ing.text || ing.Text;
+                const value = ing.value || ing.Value;
+                optionsHtml += `<option value="${value}">${text}</option>`;
+            });
+            optionsHtml += '<option value="NEW" style="font-weight:bold; color:#0d6efd;">+ CRIAR NOVO INGREDIENTE +</option>';
+
+            row.innerHTML = `
+                <td>
+                    <select class="form-select ingredient-selector" onchange="handleIngredientChange(this, ${ingredientIndex})">
+                        ${optionsHtml}
+                    </select>
+
+                    <input type="hidden" name="Input.Ingredients[${ingredientIndex}].IngredientId" id="hidden-id-${ingredientIndex}" value="0" />
+
+                    <div id="container-novo-${ingredientIndex}" class="mt-2 d-none">
+                        <input type="text" name="Input.Ingredients[${ingredientIndex}].IngredientName" class="form-control border-primary" placeholder="Nome do novo ingrediente..." />
+                    </div>
+                </td>
+                <td>
+                    <input type="text" inputmode="decimal" name="Input.Ingredients[${ingredientIndex}].Quantity" class="form-control" oninput="this.value = this.value.replace('.', ',')" required />
+                </td>
+                <td>
+                    <input type="text" name="Input.Ingredients[${ingredientIndex}].UnitMeasure" class="form-control" placeholder="Ex: gramas" required />
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('tr').remove()">Remover</button>
+                </td>
+            `;
+
+            body.appendChild(row);
+            ingredientIndex++;
+        }
+
+        function handleIngredientChange(select, index) {
+            const containerNovo = document.getElementById(`container-novo-${index}`);
+            const inputNomeNovo = containerNovo.querySelector('input');
+            const inputHiddenId = document.getElementById(`hidden-id-${index}`);
+
+            if (select.value === "NEW") {
+                containerNovo.classList.remove('d-none');
+                inputNomeNovo.setAttribute('required', 'required');
+                inputHiddenId.value = "0";
+                inputNomeNovo.focus();
+            } else {
+                containerNovo.classList.add('d-none');
+                inputNomeNovo.removeAttribute('required');
+                inputNomeNovo.value = "";
+                inputHiddenId.value = select.value || "0";
+            }
+        }
+
+        window.onload = function() {
+            if (document.querySelectorAll('#ingredients-body tr').length === 0) {
+                addIngredientRow();
+            }
+        };
+    </script>
+}
+

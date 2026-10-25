@@ -1,0 +1,197 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.UserPersonalManagement.UserRecipesPendingModel
+@{
+    ViewData["Title"] = "As Minhas Receitas Pendentes";
+}
+
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-success shadow-sm mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @Model.StatusMessage
+    </div>
+}
+
+<div class="row align-items-center mb-4">
+    <div class="col-md-7">
+        <h2 class="fw-bold text-primary mb-0">Receitas Pendentes ⏳</h2>
+        <p class="text-muted mb-0">Estamos a validar as tuas criações para a comunidade.</p>
+    </div>
+    <div class="col-md-5 text-md-end">
+        <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserProfile" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-house-door"></i> Dashboard
+        </a>
+
+        <div class="mt-2">
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 shadow-sm border">
+                <i class="bi bi-hourglass-split me-1"></i> Tens <strong>@Model.TotalCount</strong> receitas a aguardar validação
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-5">
+    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserCreateRecipe" class="btn btn-success shadow-sm">
+        <i class="bi bi-plus-circle me-1"></i> Criar Receita
+    </a>
+    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserMyRecipes" class="btn btn-light border shadow-sm">
+        <i class="bi bi-journal-text me-1"></i> As Minhas Receitas
+    </a>
+    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserFavourites" class="btn btn-light border shadow-sm">
+        <i class="bi bi-heart me-1"></i> Favoritos
+    </a>
+    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserRecipesSuggestions" class="btn btn-light border shadow-sm">
+        <i class="bi bi-lightbulb me-1"></i> Sugestões
+    </a>
+</div>
+
+@if (!Model.PendingRecipes.Any())
+{
+    <div class="alert alert-light text-center border shadow-sm p-5 rounded-4">
+        <i class="bi bi-check2-circle display-1 text-success"></i>
+        <h4 class="mt-3">Tudo em dia!</h4>
+        <p>Não tens nenhuma receita a aguardar aprovação neste momento.</p>
+        <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserCreateRecipe" class="btn btn-outline-primary px-4 rounded-pill mt-2">
+            Criar Nova Receita
+        </a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (GR24h_Models.RecipeDetailsDTO recipeDto in Model.PendingRecipes)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift rounded-4 overflow-hidden">
+
+                  
+                    <div class="position-relative">
+                      
+                        <div class="position-absolute top-0 start-0 m-2 z-1">
+                            <span class="badge bg-warning text-dark border shadow-sm">
+                                <i class="bi bi-hourglass-split me-1"></i> Em Revisão
+                            </span>
+                        </div>
+
+                        <div class="position-absolute bottom-0 start-0 m-2 z-1">
+                            <span class="badge bg-dark bg-opacity-75 text-white fw-bold px-2 py-1 shadow-sm" title="Score de Popularidade">
+                                <i class="bi bi-fire text-danger me-1"></i>Score: @recipeDto.PopularityScore.ToString("F0")
+                            </span>
+                        </div>
+
+                  
+                        <div class="position-absolute bottom-0 end-0 m-2 z-1">
+                            <span class="badge bg-dark bg-opacity-75 text-warning fw-bold px-2 py-1 shadow-sm">
+                                <i class="bi bi-star-fill me-1"></i>
+                                @(recipeDto.Recipe.Rating.HasValue? recipeDto.Recipe.Rating.Value.ToString("F1") : "N/A")
+                            </span>
+                        </div>
+
+                        
+                        <img src="@recipeDto.Recipe.GetFormattedImageUrl()"
+                             class="card-img-top"
+                             alt="@recipeDto.Recipe.Title"
+                             style="height: 220px; object-fit: cover;"
+                             onerror="this.src='/images/default-recipe.jpg'">
+                    </div>
+
+                   
+                    <div class="card-body">
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0 fw-bold text-truncate me-2" title="@recipeDto.Recipe.Title">
+                                @recipeDto.Recipe.Title
+                            </h5>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                                @recipeDto.CategoryName
+                            </span>
+                        </div>
+
+                        
+                        <div class="d-flex justify-content-between align-items-center text-muted small mt-3">
+                            <span class="text-truncate me-1" title="@recipeDto.AuthorUsername">
+                                <i class="bi bi-person-circle me-1"></i>@recipeDto.AuthorUsername
+                            </span>
+                            <span class="text-nowrap mx-1">
+                                <i class="bi bi-clock me-1"></i>@recipeDto.Recipe.PreparationTime 
+                            </span>
+                            <span class="text-nowrap ms-1">
+                                <i class="bi bi-bar-chart me-1"></i>@recipeDto.DifficultyName
+                            </span>
+                        </div>
+                    </div>
+
+                   
+                    <div class="card-footer bg-white border-0 pb-3">
+                        <div class="d-grid">
+                            <button class="btn btn-light border text-muted rounded-pill btn-sm" disabled>
+                                <i class="bi bi-shield-lock me-1"></i> Aguardar Validação
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Navegação de páginas" class="mt-4 mb-5">
+            <ul class="pagination justify-content-center">
+
+               
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link rounded-pill px-3 me-1" asp-page="./UserRecipesPending" asp-route-p="@(Model.CurrentPage - 1)">
+                        <i class="bi bi-chevron-left me-1"></i> Anterior
+                    </a>
+                </li>
+
+               
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link rounded-circle mx-1 text-center" style="width: 40px; height: 40px; line-height: 24px;" asp-page="./UserRecipesPending" asp-route-p="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link rounded-pill px-3 ms-1" asp-page="./UserRecipesPending" asp-route-p="@(Model.CurrentPage + 1)">
+                        Seguinte <i class="bi bi-chevron-right ms-1"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    }
+}
+
+<style>
+    .hover-lift {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+        }
+
+    .btn-light.border {
+        background-color: #ffffff;
+        color: #495057;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+        .btn-light.border:hover {
+            background-color: #f8f9fa;
+            border-color: #0d6efd !important;
+            color: #0d6efd;
+        }
+</style>
+
+
+

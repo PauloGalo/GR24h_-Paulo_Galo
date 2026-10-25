@@ -1,0 +1,516 @@
+﻿@page
+@model GR24h_Controller.Pages.EditRecipePageModel
+@{
+    ViewData["Title"] = "Editar Receita - " + (Model.Input?.Title ?? "Receita");
+}
+<div class="recipe-container">
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+            @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    
+    <nav aria-label="breadcrumb" class="mb-4">
+        <div class="bg-light p-3 rounded-4 shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-2">
+
+           
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a asp-page="/Index" class="text-decoration-none fw-semibold">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-page="/Search" class="text-decoration-none fw-semibold">Receitas</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-page="/Search"
+                       asp-route-Filters.Categories="@Model.RecipeDetails.CategoryName"
+                       class="text-decoration-none fw-semibold">
+                        @Model.RecipeDetails.CategoryName
+                    </a>
+                </li>
+                <li class="breadcrumb-item text-truncate" style="max-width: 200px;">
+                    <a asp-page="/RecipePage" asp-route-id="@Model.Input?.Id" class="text-decoration-none fw-semibold">
+                        @Model.Input?.Title
+                    </a>
+                </li>
+                <li class="breadcrumb-item active fw-bold text-primary" aria-current="page">
+                    Editar
+                </li>
+            </ol>
+
+            
+            <div class="d-flex align-items-center gap-2">
+                @if (HttpContext.Session.GetString("UserRole") == "Admin")
+                {
+                    <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminProfile"
+                       asp-route-id="@HttpContext.Session.GetInt32("UserId")"
+                       class="btn btn-sm btn-outline-dark rounded-pill fw-semibold">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                    </a>
+                }
+                else if (HttpContext.Session.GetInt32("UserId").HasValue)
+                {
+                    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserProfile"
+                       class="btn btn-sm btn-outline-dark rounded-pill fw-semibold">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                    </a>
+                    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserCreateRecipe"
+                       class="btn btn-sm btn-primary rounded-pill fw-semibold">
+                        <i class="bi bi-plus-circle me-1"></i> Criar Receita
+                    </a>
+                }
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <form method="post" asp-page-handler="UpdateRecipe" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="Input.Id" />
+        <input type="hidden" asp-for="Input.UserId" />
+
+        
+        <div class="recipe-hero-card mb-4 shadow-sm border rounded-4 p-4 bg-white">
+            <div class="hero-main-info">
+
+              
+                <div class="recipe-category-badge mb-2">
+                    <select asp-for="Input.CategoryId" asp-items="Model.CategoryOptions" class="form-select form-select-sm border-0 fw-bold text-uppercase">
+                        <option value="">-- Selecionar Categoria --</option>
+                    </select>
+                    <span asp-validation-for="Input.CategoryId" class="text-danger"></span>
+                </div>
+
+              
+                <div class="mb-3">
+                    <label asp-for="Input.Title" class="form-label text-muted small">Título da Receita</label>
+                    <input asp-for="Input.Title" class="form-control form-control-lg fw-bold" placeholder="Nome da receita" />
+                    <span asp-validation-for="Input.Title" class="text-danger"></span>
+                </div>
+
+                
+                <div class="recipe-quick-metrics">
+                    <div class="metric-item">
+                        <i class="bi bi-clock"></i>
+                        <div class="metric-data ms-2">
+                            <span class="label">Tempo de Preparação</span>
+                            <input asp-for="Input.PreparationTime" class="form-control form-control-sm" placeholder="Ex: 45 min" />
+                            <span asp-validation-for="Input.PreparationTime" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="metric-divider"></div>
+
+                    <div class="metric-item">
+                        <i class="bi bi-bar-chart-steps"></i>
+                        <div class="metric-data ms-2">
+                            <span class="label">Dificuldade</span>
+                            <select asp-for="Input.DifficultyId" asp-items="Model.DifficultyOptions" class="form-select form-select-sm">
+                                <option value="">-- Dificuldade --</option>
+                            </select>
+                            <span asp-validation-for="Input.DifficultyId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    .hero-media {
+                        width: 100%;
+                        max-height: 750px;
+                        position: relative;
+                    }
+
+                    .recipe-cover-image {
+                        width: 100%;
+                        height: 750px;
+                        object-fit: cover;
+                        object-position: center;
+                    }
+                </style>
+              
+                <div class="row g-2 mt-3">
+                    
+                    <div class="col-md-6">
+                        <label asp-for="Input.ImageUpload" class="form-label text-muted small">Substituir por Ficheiro (PC)</label>
+                        <input asp-for="Input.ImageUpload" type="file" accept="image/*" class="form-control form-control-sm" />
+                        <span asp-validation-for="Input.ImageUpload" class="text-danger small"></span>
+                    </div>
+
+                    
+                    <div class="col-md-6">
+                        <label asp-for="Input.ImageUrl" class="form-label text-muted small">OU Link/URL de Imagem</label>
+                        <input asp-for="Input.ImageUrl" class="form-control form-control-sm" placeholder="https://exemplo.com/imagem.jpg" />
+                        <span asp-validation-for="Input.ImageUrl" class="text-danger small"></span>
+                    </div>
+                </div>
+
+            </div>
+
+           
+
+            <div class="hero-media">
+                <img src="@(string.IsNullOrEmpty(Model.Input?.ImageUrl)
+                                         ? "/images/default-recipe.jpg"
+                                         : (Model.Input.ImageUrl.StartsWith("https", StringComparison.OrdinalIgnoreCase)
+                                             ? Model.Input.ImageUrl
+                                             : $"/images/recipes/{Model.Input.ImageUrl}"))"
+                     alt="@(Model.Input?.Title ?? "Receita")"
+                     class="recipe-cover-image"
+                     onerror="this.src='/images/default-recipe.jpg'" />
+            </div>
+
+            
+        </div>
+
+        
+        <div class="recipe-grid">
+
+            <div class="grid-column">
+                <div class="recipe-card">
+                    <div class="card-header-clean">
+                        <h3><i class="bi bi-basket"></i> Ingredientes Acompanhantes</h3>
+                        <span class="badge bg-secondary">@(Model.Input?.Ingredients?.Count ?? 0) itens</span>
+                    </div>
+
+                    
+                    <div class="ingredients-list">
+                        @if (Model.Input?.Ingredients != null && Model.Input.Ingredients.Any())
+                        {
+                            <ul class="list-group list-group-flush mb-3">
+                                @for (int i = 0; i < Model.Input.Ingredients.Count; i++)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
+                                        <input type="hidden" name="Input.Ingredients.Index" value="@i" />
+                                        <input type="hidden" asp-for="Input.Ingredients[i].RecipeIngredientId" />
+                                        <input type="hidden" asp-for="Input.Ingredients[i].IngredientId" />
+                                        <input type="hidden" asp-for="Input.Ingredients[i].IngredientName" />
+                                        <input type="hidden" asp-for="Input.Ingredients[i].Quantity" />
+                                        <input type="hidden" asp-for="Input.Ingredients[i].UnitMeasure" />
+                                        <div>
+                                            <i class="bi bi-check2-circle text-success me-2"></i>
+                                            <strong>@Model.Input.Ingredients[i].Quantity @Model.Input.Ingredients[i].UnitMeasure</strong>
+                                            - @Model.Input.Ingredients[i].IngredientName
+                                        </div>
+
+                                        
+                                        <button type="submit"
+                                                asp-page-handler="RemoveIngredient"
+                                                asp-route-ingIndex="@i"
+                                                class="btn btn-sm btn-outline-danger border-0"
+                                                title="Remover Ingrediente">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted small my-3">Nenhum ingrediente associado a esta receita ainda.</p>
+                        }
+                    </div>
+
+                    <div class="card p-3 bg-light border-0 rounded-3 mt-3">
+                        <h6 class="fw-bold mb-2"><i class="bi bi-plus-circle"></i> Adicionar Ingrediente</h6>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <select name="ingredientId" asp-items="Model.IngredientOptions" class="form-select form-select-sm mb-2">
+                                    <option value="0">-- Selecionar Ingrediente Existente --</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <input type="text" name="newIngredientName" class="form-control form-control-sm mb-2" placeholder="Ou digite um novo ingrediente..." />
+                            </div>
+                            <div class="col-6">
+                                <input type="text" inputmode="decimal" name="quantity" class="form-control form-control-sm" placeholder="Qtd (ex: 1,5)" oninput="this.value = this.value.replace('.', ',')" />
+
+                            </div>
+                            <div class="col-6">
+                                <input type="text" name="unitMeasure" class="form-control form-control-sm" placeholder="Unidade (ex: g, ml, unid)" />
+                            </div>
+                            <div class="col-12 mt-2">
+                                <button type="submit"
+                                        asp-page-handler="AddIngredient"
+                                        class="btn btn-sm btn-success w-100">
+                                    <i class="bi bi-plus-lg"></i> Adicionar à Receita
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Input?.Ingredients != null && Model.Input.Ingredients.Any())
+                    {
+                        <div class="mt-3 text-end">
+                            <button type="submit"
+                                    asp-page-handler="ClearIngredients"
+                                    class="btn btn-sm btn-link text-danger text-decoration-none"
+                                    onclick="return confirm('Tens a certeza que desejas remover todos os ingredientes?');">
+                                <i class="bi bi-eraser"></i> Limpar todos os ingredientes
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+
+          
+            <div class="grid-column">
+                <div class="recipe-card h-100 d-flex flex-column">
+                    <div class="card-header-clean">
+                        <h3><i class="bi bi-journal-text"></i> Modo de Preparação</h3>
+                    </div>
+
+                    <div class="flex-grow-1 d-flex flex-column mt-2">
+                        <label asp-for="Input.PreparationMethod" class="form-label text-muted small">Instruções passo a passo</label>
+                        <textarea asp-for="Input.PreparationMethod"
+                                  class="form-control flex-grow-1 p-3"
+                                  rows="12"
+                                  placeholder="Descreve detalhadamente como preparar esta receita..."></textarea>
+                        <span asp-validation-for="Input.PreparationMethod" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+       
+        <div class="d-flex justify-content-between align-items-center mt-4 p-3 bg-white rounded shadow-sm border">
+            <div>
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteRecipeModal">
+                    <i class="bi bi-trash"></i> Eliminar Receita
+                </button>
+            </div>
+            <div class="modal fade" id="deleteRecipeModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title fw-bold">Eliminar Receita</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body py-4 text-start">
+                            <p class="mb-1">Atenção: Tens a certeza que queres eliminar permanentemente a receita:</p>
+                            <p class="fw-bold fs-5 text-dark mb-2"><strong>"@Model.Input?.Title"</strong>?</p>
+                            <p class="text-muted small mb-0">Esta ação não pode ser desfeita.</p>
+                        </div>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                            <form method="post">
+                                <button type="submit"
+                                        asp-page-handler="DeleteRecipe"
+                                        asp-route-recipeId="@Model.Input?.Id"
+                                        class="btn btn-danger btn-sm px-3">
+                                    Eliminar Definitivamente
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-page="/RecipePage" asp-route-id="@Model.Input?.Id" class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+                <button type="submit" asp-page-handler="UpdateRecipe" class="btn btn-primary px-4 fw-bold">
+                    <i class="bi bi-check-circle"></i> Guardar Alterações
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+   
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white mb-4">
+        <div class="row align-items-center g-4 text-center">
+
+           
+            <div class="col-md-4 border-end-md pb-3 pb-md-0">
+                <h5 class="text-muted fw-semibold mb-2">
+                    <i class="bi bi-person-badge me-1"></i> A Tua Avaliação Submetida
+                </h5>
+
+                @if (Model.Input?.UserRating.HasValue == true && Model.Input.UserRating.Value > 0)
+                {
+                    <div class="display-3 fw-bold text-primary mb-1">
+                        @Model.Input.UserRating.Value.ToString("F1")
+                    </div>
+
+                    <div class="text-warning fs-4 mb-2">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= (int)Model.Input.UserRating.Value)
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        }
+                    </div>
+
+                    <small class="text-muted d-block">Nota atribuída por ti anteriormente</small>
+                }
+                else
+                {
+                    <div class="display-4 text-muted my-2">--</div>
+                    <div class="text-muted fs-5 mb-2">
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <small class="text-muted d-block">Ainda não atribuíste uma classificação individual</small>
+                }
+            </div>
+
+    
+            <div class="col-md-4 border-end-md py-3 py-md-0">
+                <h5 class="text-muted fw-semibold mb-2">
+                    <i class="bi bi-globe me-1"></i> Classificação Global
+                </h5>
+
+                <div class="display-3 fw-bold text-dark mb-1">
+                    @(Model.RecipeDetails?.Recipe?.Rating.HasValue == true && Model.RecipeDetails.Recipe.Rating > 0
+                                        ? Model.RecipeDetails.Recipe.Rating.Value.ToString("F1")
+                                        : "N/A")
+                </div>
+
+                <div class="text-warning fs-4 mb-2">
+                    @if (Model.RecipeDetails?.Recipe?.Rating.HasValue == true && Model.RecipeDetails.Recipe.Rating > 0)
+                    {
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(Model.RecipeDetails.Recipe.Rating.Value))
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <i class="bi bi-star text-muted"></i>
+                        <i class="bi bi-star text-muted"></i>
+                        <i class="bi bi-star text-muted"></i>
+                        <i class="bi bi-star text-muted"></i>
+                        <i class="bi bi-star text-muted"></i>
+                    }
+                </div>
+
+                <small class="text-muted d-block">Média de todas as avaliações recebidas</small>
+            </div>
+
+         
+            <div class="col-md-4 pt-3 pt-md-0">
+                <h5 class="text-muted fw-semibold mb-2">
+                    <i class="bi bi-fire me-1 text-danger"></i> Índice de Popularidade
+                </h5>
+
+                <div class="display-3 fw-bold text-danger mb-1 d-flex align-items-center justify-content-center gap-1">
+                    <span>
+                        @(Model.RecipeDetails?.PopularityScore.ToString("F0") ?? "0")
+                    </span>
+                </div>
+
+                <div class="mb-2">
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1 fw-medium">
+                        Métrica em Tempo Real
+                    </span>
+                </div>
+
+                <small class="text-muted d-block">Reflete as visualizações e interatividade da comunidade</small>
+            </div>
+
+        </div>
+    </div>
+
+    
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white">
+        <h3 class="fw-bold mb-4"><i class="bi bi-chat-dots me-2 text-primary"></i> Comentários da Tua Comunidade</h3>
+
+        @if (Model.RecipeComments == null || !Model.RecipeComments.Any(c => c.Comment != null && c.Comment.ParentCommentId == null))
+        {
+            <div class="alert alert-light border text-center p-5 rounded-4 shadow-sm mb-0">
+                <i class="bi bi-chat-square-text display-4 text-muted"></i>
+                <p class="mt-3 mb-0">Ainda não há comentários nesta receita.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (GR24h_Models.CommentDTO commentDto in Model.RecipeComments.Where(c => c.Comment != null && c.Comment.ParentCommentId == null).OrderBy(r => r.Comment.CommentDate))
+            {
+                <div class="card mb-3 border-0 bg-light rounded-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-2" style="width: 38px; height: 38px;">
+                                    @(string.IsNullOrEmpty(commentDto.Username) ? "U" : commentDto.Username.Substring(0, 1).ToUpper())
+                                </div>
+                                <span class="fw-bold text-dark">@(commentDto.Username ?? "Utilizador")</span>
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1"></i> @commentDto.Comment.CommentDate.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                        </div>
+                        <p class="card-text border-start border-primary border-3 ps-3 py-1 mt-2 text-secondary">
+                            @commentDto.Comment.CommentContent
+                        </p>
+
+                       
+                        @foreach (GR24h_Models.CommentDTO replyDto in Model.RecipeComments.Where(r => r.Comment != null && r.Comment.ParentCommentId == commentDto.Comment.CommentId).OrderBy(r => r.Comment.CommentDate))
+                        {
+                            <div class="card ms-4 mt-3 border-0 bg-white rounded-3 shadow-sm">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-2 small" style="width: 28px; height: 28px;">
+                                                @(string.IsNullOrEmpty(replyDto.Username) ? "U" : replyDto.Username.Substring(0, 1).ToUpper())
+                                            </div>
+                                            <span class="fw-bold small text-dark">@(replyDto.Username ?? "Utilizador")</span>
+                                        </div>
+                                        <small class="text-muted" style="font-size: 0.75rem;">
+                                            @replyDto.Comment.CommentDate.ToString("dd/MM/yyyy HH:mm")
+                                        </small>
+                                    </div>
+                                    <p class="card-text mb-0 small text-dark ps-2">
+                                        @replyDto.Comment.CommentContent
+                                    </p>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+   
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                
+                document.querySelectorAll('form input').forEach(function (input) {
+                    input.addEventListener('keydown', function (event) {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            return false;
+                        }
+                    });
+                });
+            });
+        </script>
+}

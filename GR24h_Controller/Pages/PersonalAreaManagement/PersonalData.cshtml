@@ -1,0 +1,180 @@
+﻿@page
+@model GR24h_Controller.Pages.PersonalAreaManagement.PersonalDataModel
+@{
+	ViewData["Title"] = "Dados Pessoais";
+
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center p-3">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Os Meus Dados</h5>
+                    <span class="badge @(Model.IsAdmin ? "bg-danger" : "bg-success") px-3 py-2">
+                        <i class="bi @(Model.IsAdmin ? "bi-shield-lock" : "bi-person") me-1"></i>
+                        @(Model.IsAdmin ? "ADMINISTRADOR" : "UTILIZADOR")
+                    </span>
+                </div>
+
+                <div class="card-body p-4">
+                    @if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        <div class="alert @(Model.Message.Contains("Erro") ? "alert-danger" : "alert-info") border-0 shadow-sm mb-4">
+                            @Model.Message
+                        </div>
+                    }
+
+                    <form method="post" id="profileForm">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-secondary">PRIMEIRO NOME</label>
+                                <input type="text" asp-for="FirstName" class="form-control input-custom" readonly />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-secondary">ÚLTIMO NOME</label>
+                                <input type="text" asp-for="LastName" class="form-control input-custom" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-secondary">USERNAME</label>
+                                <input type="text" asp-for="Username" class="form-control input-custom" readonly />
+                                <div id="usernameHelp" class="form-text d-none">
+                                    @(Model.IsAdmin ? "Deve começar por 'admin'." : "Mínimo 3 caracteres.")
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-secondary">EMAIL</label>
+                                <input type="email" asp-for="Email" class="form-control input-custom" readonly />
+                                <div id="emailHelp" class="form-text d-none">
+                                    @(Model.IsAdmin ? "Uso obrigatório de @galoreceitas24horas.pt" : "Gmail, Outlook, Hotmail ou Live.")
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="passwordSection" class="d-none mt-3 animate__animated animate__fadeIn">
+                            <hr />
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-primary">ALTERAR PASSWORD (DEIXE VAZIO PARA MANTER)</label>
+                                <input type="password" asp-for="NewPassword" class="form-control" placeholder="Mín. 8 chars, 1 Maiúscula, 1 Número, 1 Símbolo" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+                            
+                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                <i class="bi bi-trash me-1"></i> Eliminar Conta
+                            </button>
+
+                            <div id="viewActions">
+                                @if (Model.IsAdmin)
+                                {
+                                    <a asp-page="/PersonalAreaManagement/AdminPersonalManagement/AdminProfile"
+                                       asp-route-id="@Model.Id"
+                                       class="btn btn-outline-secondary px-4 me-2">
+                                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-page="/PersonalAreaManagement/UserPersonalManagement/UserProfile"
+                                       asp-route-id="@Model.Id"
+                                       class="btn btn-outline-secondary px-4 me-2">
+                                        <i class="bi bi-arrow-left me-1"></i> Voltar
+                                    </a>
+                                }
+                                <button type="button" class="btn btn-primary px-4" onclick="enableEditMode()">Editar Perfil</button>
+                            </div>
+
+                            <div id="editActions" class="d-none">
+                                <button type="button" class="btn btn-link text-decoration-none text-muted me-3" onclick="location.reload()">Cancelar</button>
+                                <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">Guardar Alterações</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold" id="deleteAccountModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Eliminar Conta
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="DeleteAccount">
+                <div class="modal-body p-4">
+                    <p class="text-secondary mb-3">
+                        Tem a certeza que deseja eliminar permanentemente a sua conta? Esta ação <strong>não pode ser desfeita</strong>.
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">CONFIRME A SUA PALAVRA-PASSE</label>
+                        <input type="password" asp-for="PasswordConfirm" class="form-control" placeholder="Introduza a sua password atual" required />
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger fw-bold px-4">Eliminar Definitivamente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function enableEditMode() {
+            const inputs = document.querySelectorAll('.input-custom');
+            inputs.forEach(input => {
+                input.removeAttribute('readonly');
+                input.style.backgroundColor = "#fff";
+                input.style.border = "1px solid #ced4da";
+                input.style.pointerEvents = "auto";
+            });
+
+            document.getElementById('passwordSection').classList.remove('d-none');
+            document.getElementById('usernameHelp').classList.remove('d-none');
+            document.getElementById('emailHelp').classList.remove('d-none');
+
+            document.getElementById('viewActions').classList.add('d-none');
+            document.getElementById('editActions').classList.remove('d-none');
+
+            inputs[0].focus();
+        }
+    </script>
+
+    <style>
+        .input-custom {
+            background-color: transparent !important;
+            border: 1px solid transparent;
+            padding-left: 0;
+            pointer-events: none;
+            color: #212529;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .input-custom:focus {
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .card-header {
+            border-radius: 12px 12px 0 0 !important;
+        }
+    </style>
+}
+
