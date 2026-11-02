@@ -19,7 +19,9 @@ Informações da Receita
 <img width="1891" height="895" alt="Captura de ecrã_ Pagina de Receita1_GR24h_2026-11-02 213434" src="https://github.com/user-attachments/assets/3d2f2496-0dd4-4cc4-b024-65d0d0f6448f" />
 
 Avaliações e Comentários
-<img width="1897" height="921" alt="Captura de ecrã_PaginaReceita2_GR24h 2026-11-02 213824" src="https://github.com/user-attachments/assets/12636b40-68c6-4011-99a6-7656ca9a0f0b" />
+
+<img width="1897" height="890" alt="Captura de ecrã_PaginaReceita2_GR24h 2026-11-02 213824" src="https://github.com/user-attachments/assets/ecb265be-18af-4f7c-b52e-c82b90661102" />
+
 
 Perfil de User (UserProfile):
 
