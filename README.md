@@ -7,33 +7,27 @@ Demonstração da Interface
 
 Página Principal (Homepage):
 
-<img width="1876" height="773" alt="Captura de ecrã GR24hHomepage" src="https://github.com/user-attachments/assets/ad705802-1e3a-4e96-8cb6-8341c5361ef1" />
+<img width="1900" height="4873" alt="localhost_7123_ Homepage" src="https://github.com/user-attachments/assets/c3785450-8b89-4483-b0dd-7f732736dd63" />
+
 
 Página de Pesquisa (Search):
 
-<img width="1820" height="902" alt="Captura de ecrã 2026-GR24hSearch" src="https://github.com/user-attachments/assets/777b2395-6814-4ea0-a429-36aeef924aba" />
+<img width="1900" height="2110" alt="localhost_7123_Search_Filters SearchTerm= SearchPage" src="https://github.com/user-attachments/assets/b2772561-7821-4db3-806d-ba6c6d2a0528" />
 
 
 Página de Receita (RecipePage):
 
-Informações da Receita
-<img width="1891" height="895" alt="Captura de ecrã_ Pagina de Receita1_GR24h_2026-11-02 213434" src="https://github.com/user-attachments/assets/3d2f2496-0dd4-4cc4-b024-65d0d0f6448f" />
-
-Avaliações e Comentários
-
-<img width="1897" height="890" alt="Captura de ecrã_PaginaReceita2_GR24h 2026-11-02 213824" src="https://github.com/user-attachments/assets/ecb265be-18af-4f7c-b52e-c82b90661102" />
-
+<img width="1900" height="4005" alt="localhost_7123_RecipePage_id=118" src="https://github.com/user-attachments/assets/8828385a-a78a-4555-9818-b05d9b2bb160" />
 
 
 Área Pessoal de Utilizador (UserProfile):
 
-<img width="1906" height="898" alt="Captura de ecrã_GR24h_UserProfile 2026-11-02 214028" src="https://github.com/user-attachments/assets/74aa4c3b-e5b9-4296-8da6-2d777b7557df" />
-
+<img width="1900" height="2123" alt="localhost_7123_PersonalAreaManagement_UserPersonalManagement_UserProfile_id=10" src="https://github.com/user-attachments/assets/72df2c04-4279-4b49-aede-c2a79500a0fd" />
 
 
 Área Pessoal de Admin (AdminProfile):
 
-<img width="1885" height="898" alt="Captura de ecrã_GR24h_AdminProfile 2026-11-02 214157" src="https://github.com/user-attachments/assets/85d5e3e7-d236-4415-b021-340ce2a0a8f5" />
+<img width="1900" height="1519" alt="localhost_7123_PersonalAreaManagement_AdminPersonalManagement_AdminProfile_id=3" src="https://github.com/user-attachments/assets/9dc1a8c2-657e-4af4-ac00-dfdb0d96483d" />
 
 
 2. Principais Funcionalidades (Features)
