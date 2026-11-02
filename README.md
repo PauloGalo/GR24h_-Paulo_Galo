@@ -13,6 +13,7 @@ Página de Pesquisa (Search):
 
 <img width="1820" height="902" alt="Captura de ecrã 2026-GR24hSearch" src="https://github.com/user-attachments/assets/777b2395-6814-4ea0-a429-36aeef924aba" />
 
+
 Página de Receita (RecipePage):
 
 Informações da Receita
@@ -23,9 +24,12 @@ Avaliações e Comentários
 <img width="1897" height="890" alt="Captura de ecrã_PaginaReceita2_GR24h 2026-11-02 213824" src="https://github.com/user-attachments/assets/ecb265be-18af-4f7c-b52e-c82b90661102" />
 
 
+
 Perfil de User (UserProfile):
 
-<img width="1906" height="923" alt="Captura de ecrã_GR24h_UserProfile 2026-11-02 214028" src="https://github.com/user-attachments/assets/eca9ae68-29b9-4b5c-9177-63d043f61b9d" />
+<img width="1906" height="898" alt="Captura de ecrã_GR24h_UserProfile 2026-11-02 214028" src="https://github.com/user-attachments/assets/74aa4c3b-e5b9-4296-8da6-2d777b7557df" />
+
+
 
 Perfil de Admin (AdminProfile):
 
