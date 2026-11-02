@@ -13,6 +13,21 @@ Página de Pesquisa (Search):
 
 <img width="1820" height="902" alt="Captura de ecrã 2026-GR24hSearch" src="https://github.com/user-attachments/assets/777b2395-6814-4ea0-a429-36aeef924aba" />
 
+Página de Receita (RecipePage):
+
+Informações da Receita
+<img width="1891" height="895" alt="Captura de ecrã_ Pagina de Receita1_GR24h_2026-11-02 213434" src="https://github.com/user-attachments/assets/3d2f2496-0dd4-4cc4-b024-65d0d0f6448f" />
+
+Avaliações e Comentários
+<img width="1897" height="921" alt="Captura de ecrã_PaginaReceita2_GR24h 2026-11-02 213824" src="https://github.com/user-attachments/assets/12636b40-68c6-4011-99a6-7656ca9a0f0b" />
+
+Perfil de User (UserProfile):
+
+<img width="1906" height="923" alt="Captura de ecrã_GR24h_UserProfile 2026-11-02 214028" src="https://github.com/user-attachments/assets/eca9ae68-29b9-4b5c-9177-63d043f61b9d" />
+
+Perfil de Admin (AdminProfile):
+
+<img width="1885" height="898" alt="Captura de ecrã_GR24h_AdminProfile 2026-11-02 214157" src="https://github.com/user-attachments/assets/85d5e3e7-d236-4415-b021-340ce2a0a8f5" />
 
 
 2. Principais Funcionalidades (Features)
