@@ -25,13 +25,13 @@ Avaliações e Comentários
 
 
 
-Perfil de User (UserProfile):
+Área Pessoal de Utilizador (UserProfile):
 
 <img width="1906" height="898" alt="Captura de ecrã_GR24h_UserProfile 2026-11-02 214028" src="https://github.com/user-attachments/assets/74aa4c3b-e5b9-4296-8da6-2d777b7557df" />
 
 
 
-Perfil de Admin (AdminProfile):
+Área Pessoal de Admin (AdminProfile):
 
 <img width="1885" height="898" alt="Captura de ecrã_GR24h_AdminProfile 2026-11-02 214157" src="https://github.com/user-attachments/assets/85d5e3e7-d236-4415-b021-340ce2a0a8f5" />
 
