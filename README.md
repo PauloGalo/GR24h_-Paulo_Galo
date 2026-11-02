@@ -37,6 +37,8 @@ Linguagem & Framework: C#, .NET, ASP.NET Core Razor Pages.
 
 Base de Dados & Persistência: Microsoft SQL Server, consultas relacionais e execução de scripts SQL customizados (script.sql).
 
+Front-End: HTML, CSS, JavaScript, Bootstrap.
+
 Arquitetura: Arquitetura em Camadas (Domain/Models, Repositories, Services, Controllers/Pages).
 
 Padrões & Lógica: DTOs (Data Transfer Objects), Repository Pattern, Injeção de Dependências, princípios de Domain-Driven Design (DDD) com validações e regras de negócio na camada de serviço, e tratamento robusto de nulos e exceções.
